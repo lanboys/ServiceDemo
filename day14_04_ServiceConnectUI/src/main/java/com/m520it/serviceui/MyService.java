@@ -12,6 +12,8 @@ import java.util.TimerTask;
 
 public class MyService extends Service {
 
+    private static final String TAG = "tag";
+
     public MyService() {
     }
 

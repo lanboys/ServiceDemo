@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/ServiceDemo.iml" filepath="$PROJECT_DIR$/ServiceDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/day14_03_Service生命周期/day14_03_Service生命周期.iml" filepath="$PROJECT_DIR$/day14_03_Service生命周期/day14_03_Service生命周期.iml" />
       <module fileurl="file://$PROJECT_DIR$/day14_04_ServiceConnectUI/day14_04_ServiceConnectUI.iml" filepath="$PROJECT_DIR$/day14_04_ServiceConnectUI/day14_04_ServiceConnectUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/day14_05_支付宝/day14_05_支付宝.iml" filepath="$PROJECT_DIR$/day14_05_支付宝/day14_05_支付宝.iml" />

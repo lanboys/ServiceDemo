@@ -48,9 +48,9 @@ public class MyService extends Service {
             @Override
             public void run() {
                 while (flag) {
-                    Log.i(TAG, "run()");
+                    Log.e(TAG, Thread.currentThread().getName() + " is running");
                     try {
-                        sleep(2000);
+                        sleep(3000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

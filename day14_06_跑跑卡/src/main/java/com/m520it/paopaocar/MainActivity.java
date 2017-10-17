@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -18,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ServiceConnection mConnection;
     private IAlipayService mAgent;
+    private Intent mIntent;
+    private static final String TAG = "AlipayService";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +28,21 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent("com.m520it.alipay.action.ALIPAY");
+        binderAlipayService(null);
+    }
+
+    public void binderAlipayService(View view) {
+
+        //http://blog.csdn.net/vrix/article/details/45289207
+        mIntent = new Intent("com.m520it.alipay.action.ALIPAY");
+        mIntent.setPackage("com.m520it.alipay");
+
+        //在oppo手机中，如果支付宝 app 被杀死，服务也会被杀死，导致支付失败，需要重新绑定
+
         //启动服务
-        startService(intent);
+        startService(mIntent);
         //绑定支付服务
-        bindAlipayService();
+        bindAlipayService(mIntent);
     }
 
     public void buyCar(View view) {
@@ -63,13 +76,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //绑定支付服务
-    private void bindAlipayService() {
+    private void bindAlipayService(Intent intent) {
         //只需要在第一次进行绑定,否则导致服务无法关闭
         if (mConnection != null) {
             return;
         }
 
-        Intent intent = new Intent("com.m520it.alipay.action.ALIPAY");
         mConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -79,20 +91,22 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onServiceDisconnected(ComponentName componentName) {
-
+                Toast.makeText(MainActivity.this, "断开支付宝服务", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "断开支付宝服务");
             }
         };
         //绑定支付服务
         bindService(intent, mConnection, BIND_AUTO_CREATE);
-
     }
 
     @Override
     protected void onDestroy() {
+
+        // oppo手机 解绑不了服务 其他未知
+
         //销毁前进行解绑操作,并关闭服务,如果是手动解绑，还需要将mConnection,mAgent置为null
-        Intent intent = new Intent("com.m520it.alipay.action.ALIPAY");
         unbindService(mConnection);
-        stopService(intent);
+        stopService(mIntent);
 
         super.onDestroy();
     }
