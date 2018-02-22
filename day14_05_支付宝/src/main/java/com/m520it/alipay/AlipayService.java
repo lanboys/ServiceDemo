@@ -1,20 +1,21 @@
 package com.m520it.alipay;
 
-import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-public class AlipayService extends Service {
+public class AlipayService extends BadeService {
 
     private boolean flag = true;
-    private static final String TAG = "AlipayService";
+
 
     public AlipayService() {
     }
 
     @Override
     public IBinder onBind(Intent intent) {
+        super.onBind(intent);
+
         return new AliPayAgent();
     }
 
@@ -35,6 +36,12 @@ public class AlipayService extends Service {
         }.start();
 
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        flag = false;
+        super.onDestroy();
     }
 
     //支付成功200    余额不足404   网络异常505    密码出错600

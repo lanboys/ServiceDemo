@@ -1,52 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.m520it.alipay.MainActivity">
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="支付宝内购买"/>
-
+        android:layout_marginBottom="20dp"
+        android:text="支付宝内购买"
+        android:textSize="25sp"/>
     <Button
-        android:id="@+id/button"
+        android:id="@+id/buttonAlipay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="48dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="55dp"
-        android:onClick="buyCar"
-        android:text="购买跑跑卡厅车"/>
+        android:onClick="binderAlipayService"
+        android:text="手动启动支付宝服务"/>
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="59dp"
-        android:ems="10"
-        android:inputType="number"/>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText"
-        android:layout_alignStart="@+id/editText"
-        android:layout_below="@+id/button"
-        android:layout_marginTop="28dp"
+        android:padding="15dp"
         android:text="跑跑卡厅车价格"/>
-</RelativeLayout>
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="6"
+        android:inputType="number"/>
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="buyCar"
+
+        android:text="购买跑跑卡厅车"/>
+
+</LinearLayout>

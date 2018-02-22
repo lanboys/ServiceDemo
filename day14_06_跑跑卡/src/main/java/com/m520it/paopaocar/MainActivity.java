@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     private IAlipay mAgent;
     private Intent mIntent;
+    private EditText mEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,9 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
-        binderAlipayService(null);
+        mEditText = findViewById(R.id.editText);
+        mEditText.setText("10");
+
     }
 
     @SuppressLint("NewApi")
@@ -44,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         //在oppo手机中，如果支付宝 app 被杀死，服务也会被杀死，导致支付失败，需要重新绑定
 
         //启动服务
-        startService(mIntent);
+        //startService(mIntent);
         //绑定支付服务
         bindAlipayService(mIntent);
     }
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
         //销毁前进行解绑操作,并关闭服务,如果是手动解绑，还需要将mConnection,mAgent置为null
         unbindService(mConnection);
-        stopService(mIntent);
+        //stopService(mIntent);
 
         super.onDestroy();
     }
@@ -88,13 +90,14 @@ public class MainActivity extends AppCompatActivity {
     public void buyCar(View view) {
 
         //从编辑框中获取价格
-        EditText viewById = (EditText) findViewById(R.id.editText);
-        final String price = viewById.getText().toString();
+        final String price = mEditText.getText().toString();
 
         try {
-            int payResult = mAgent.callSafePay("lisi", "123", Integer.valueOf(price), System.currentTimeMillis());
+            int payResult = mAgent.callSafePay("lisi", "123",
+                    Integer.valueOf(price), System.currentTimeMillis());
+
             handlerPayResult(payResult);
-        } catch (RemoteException e) {
+        } catch (Exception e) {
 
         }
     }
