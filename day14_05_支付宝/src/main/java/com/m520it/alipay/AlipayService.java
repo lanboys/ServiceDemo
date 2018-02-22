@@ -49,7 +49,8 @@ public class AlipayService extends Service {
     }
 
     //    利用   AIDl 进行进程间通讯
-    private class AliPayAgent extends IAlipayService.Stub {
+
+    private class AliPayAgent extends IAlipay.Stub {
 
         @Override
         public int callSafePay(String account, String pwd, double money, long currTimeMills) {

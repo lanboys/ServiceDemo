@@ -19,9 +19,11 @@ import com.m520it.musicmidea.fileUtils.SharedUtil;
 import java.util.ArrayList;
 
 public class MusicPlayService extends Service {
+
     private static final int NOTIFICATION_FLAG = 1;
     private MediaPlayer mMediaPlayer;
-    private int mCurrentPositon;
+    private int mCurrentPosition;
+    public static final String TAG = "musicPlay";
 
     public MusicPlayService() {
     }
@@ -38,9 +40,9 @@ public class MusicPlayService extends Service {
     }
 
     public void playMusic(final ArrayList<String> musicDatas, final int position) {
-        mCurrentPositon = position;
+        mCurrentPosition = position;
 
-        Log.v(TAG, "MusicPlayService.playMusic():20:: " + "开始播放" + musicDatas.get(mCurrentPositon));
+        Log.v(TAG, "MusicPlayService.playMusic():20:: " + "开始播放" + musicDatas.get(mCurrentPosition));
         try {
             if (mMediaPlayer == null) {
                 mMediaPlayer = new MediaPlayer();
@@ -48,28 +50,26 @@ public class MusicPlayService extends Service {
                 mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
-                        Log.v(TAG, "MusicPlayService.onCompletion():31:: " + musicDatas.get(mCurrentPositon) + "播放完成了");
+                        Log.v(TAG, "MusicPlayService.onCompletion():31:: " + musicDatas.get(mCurrentPosition) + "播放完成了");
 
                         int playMode = SharedUtil.getPlayMode(MusicPlayService.this);
                         if (playMode == SharedUtil.SINGLE_LOOP) {
-                            playMusic(musicDatas, mCurrentPositon);
+                            playMusic(musicDatas, mCurrentPosition);
                         } else if (playMode == SharedUtil.ALL_LOOP) {
-                            mCurrentPositon++;
-                            if (mCurrentPositon > musicDatas.size() - 1) {
-                                mCurrentPositon = 0;
+                            mCurrentPosition++;
+                            if (mCurrentPosition > musicDatas.size() - 1) {
+                                mCurrentPosition = 0;
                             }
-                            playMusic(musicDatas, mCurrentPositon);
+                            playMusic(musicDatas, mCurrentPosition);
                         }
-
-
                     }
                 });
             }
             mMediaPlayer.reset();//重置播放器,清空已经存在的音乐
-            mMediaPlayer.setDataSource(musicDatas.get(mCurrentPositon));
+            mMediaPlayer.setDataSource(musicDatas.get(mCurrentPosition));
             mMediaPlayer.prepare(); // might take long! (for buffering, etc)
             mMediaPlayer.start();
-            showNotification(musicDatas.get(mCurrentPositon));
+            showNotification(musicDatas.get(mCurrentPosition));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,7 +83,6 @@ public class MusicPlayService extends Service {
         mMediaPlayer.stop();
         mMediaPlayer.release();
         mMediaPlayer = null;
-
     }
 
     public void showNotification(String musicName) {
@@ -108,7 +107,6 @@ public class MusicPlayService extends Service {
     }
 
     private class MusicAgent extends Binder implements IMusicPlayService {
-
 
         @Override
         public void callPlayMusic(ArrayList<String> musicDatas, int position) {

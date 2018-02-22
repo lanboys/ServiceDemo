@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private IMusicPlayService mMusicAgent;
     private ServiceConnection mServiceConnection;
 
+    public static final String TAG = "music";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +56,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         };
         bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
-
-
     }
 
     private void initUI() {
@@ -116,14 +116,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onDestroy() {
-//        //2.解绑服务
-//        if (mServiceConnection != null) {
-//            unbindService(mServiceConnection);
-//            mServiceConnection = null;
-//        }
-//        //3.停止服务
-//        Intent intent = new Intent(this, MusicPlayService.class);
-//        stopService(intent);
+        //        //2.解绑服务
+        //        if (mServiceConnection != null) {
+        //            unbindService(mServiceConnection);
+        //            mServiceConnection = null;
+        //        }
+        //        //3.停止服务
+        //        Intent intent = new Intent(this, MusicPlayService.class);
+        //        stopService(intent);
 
         Log.v(TAG, "MainActivity.onDestroy():36:: ");
         super.onDestroy();
