@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-public class BadeService extends Service {
+public abstract class BaseService extends Service {
 
     /**
      * 1.一次或多次启动服务,只需要一次关闭服务就能关闭,界面1启动服务,界面2也可以关闭服务
@@ -17,34 +17,33 @@ public class BadeService extends Service {
      * java.lang.IllegalArgumentException: Service not registered: com.m520it.serviceui.MainActivity$1@fb1cf1f
      */
 
-    public static final String TAG = "BadeService";
+    public static final String TAG = "BaseService";
 
-    public BadeService() {
+    public BaseService() {
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.e(TAG, "BadeService.onBind():16:: ");
+        Log.e(TAG, "BaseService.onBind():16:: ");
         return null;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e(TAG, "BadeService.onCreate():24:: ");
+        Log.e(TAG, "BaseService.onCreate():24:: ");
     }
-
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Log.e(TAG, "BadeService.onStartCommand():36:: ");
+        Log.e(TAG, "BaseService.onStartCommand():36:: ");
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
-        Log.e(TAG, "BadeService.onDestroy():36:: ");
+        Log.e(TAG, "BaseService.onDestroy():36:: ");
 
         super.onDestroy();
     }

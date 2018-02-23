@@ -1,41 +1,50 @@
-///*
-// * This file is auto-generated.  DO NOT MODIFY.
-// * Original file: D:\\Android\\Android_WorkSpace\\ServiceDemo\\day14_05_֧����\\src\\main\\aidl\\com\\m520it\\alipay\\IAlipayService.aidl
-// */
+//
 //package com.m520it.alipay;
+//
+//import android.util.Log;
+//
+//import java.util.ArrayList;
+//
+//import static com.m520it.alipay.BaseService.TAG;
 //
 ///**
 // * Created by 520 on 2016/11/28.
 // */
-//public interface IAlipayService11 extends android.os.IInterface {
+//public interface IAlipay extends android.os.IInterface {
 //
 //    /**
 //     * Local-side IPC implementation stub class.
 //     */
-//    public static abstract class Stub extends android.os.Binder implements com.m520it.alipay.IAlipayService {
+//    public static abstract class Stub extends android.os.Binder implements com.m520it.alipay.IAlipay {
 //
-//        private static final java.lang.String DESCRIPTOR = "com.m520it.alipay.IAlipayService";
+//        private static final java.lang.String DESCRIPTOR = "com.m520it.alipay.IAlipay";
+//        ArrayList<String> companyId = new ArrayList<String>();
 //
 //        /**
 //         * Construct the stub at attach it to the interface.
 //         */
 //        public Stub() {
+//
 //            this.attachInterface(this, DESCRIPTOR);
+//
+//            companyId.add("com.bing.lan.lanbing");
+//            companyId.add("com.m520it.paopaocar1");
 //        }
 //
 //        /**
-//         * Cast an IBinder object into an com.m520it.alipay.IAlipayService interface,
+//         * Cast an IBinder object into an com.m520it.alipay.IAlipay interface,
 //         * generating a proxy if needed.
 //         */
-//        public static com.m520it.alipay.IAlipayService asInterface(android.os.IBinder obj) {
+//
+//        public static com.m520it.alipay.IAlipay asInterface(android.os.IBinder obj) {
 //            if ((obj == null)) {
 //                return null;
 //            }
 //            android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);
-//            if (((iin != null) && (iin instanceof com.m520it.alipay.IAlipayService))) {
-//                return ((com.m520it.alipay.IAlipayService) iin);
+//            if (((iin != null) && (iin instanceof com.m520it.alipay.IAlipay))) {
+//                return ((com.m520it.alipay.IAlipay) iin);
 //            }
-//            return new com.m520it.alipay.IAlipayService.Stub.Proxy(obj);
+//            return new com.m520it.alipay.IAlipay.Stub.Proxy(obj);
 //        }
 //
 //        @Override
@@ -56,20 +65,30 @@
 //                    _arg0 = data.readString();
 //                    java.lang.String _arg1;
 //                    _arg1 = data.readString();
-//                    double _arg2;
-//                    _arg2 = data.readDouble();
-//                    long _arg3;
-//                    _arg3 = data.readLong();
-//                    int _result = this.callSafePay(_arg0, _arg1, _arg2, _arg3);
+//                    java.lang.String _arg2;
+//                    _arg2 = data.readString();
+//                    double _arg3;
+//                    _arg3 = data.readDouble();
+//                    long _arg4;
+//                    _arg4 = data.readLong();
+//
+//                    int _result = this.callSafePay(_arg0, _arg1, _arg2, _arg3, _arg4);
 //                    reply.writeNoException();
 //                    reply.writeInt(_result);
-//                    return true;
+//
+//                    //权限验证
+//                    if (companyId.contains(_arg0)) {
+//                        return true;
+//                    }
+//                    Log.e(TAG, "请先在支付宝注册");
+//
+//                    return false;
 //                }
 //            }
 //            return super.onTransact(code, data, reply, flags);
 //        }
 //
-//        private static class Proxy implements com.m520it.alipay.IAlipayService {
+//        private static class Proxy implements com.m520it.alipay.IAlipay {
 //
 //            private android.os.IBinder mRemote;
 //
@@ -87,12 +106,13 @@
 //            }
 //
 //            @Override
-//            public int callSafePay(java.lang.String account, java.lang.String pwd, double money, long currTimeMills) throws android.os.RemoteException {
+//            public int callSafePay(java.lang.String companyId, java.lang.String account, java.lang.String pwd, double money, long currTimeMills) throws android.os.RemoteException {
 //                android.os.Parcel _data = android.os.Parcel.obtain();
 //                android.os.Parcel _reply = android.os.Parcel.obtain();
 //                int _result;
 //                try {
 //                    _data.writeInterfaceToken(DESCRIPTOR);
+//                    _data.writeString(companyId);
 //                    _data.writeString(account);
 //                    _data.writeString(pwd);
 //                    _data.writeDouble(money);
@@ -111,6 +131,5 @@
 //        static final int TRANSACTION_callSafePay = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
 //    }
 //
-//    public int callSafePay(java.lang.String account, java.lang.String pwd, double money, long currTimeMills) throws android.os.RemoteException;
+//    public int callSafePay(java.lang.String companyId, java.lang.String account, java.lang.String pwd, double money, long currTimeMills) throws android.os.RemoteException;
 //}
-//

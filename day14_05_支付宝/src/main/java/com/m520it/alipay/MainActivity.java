@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ServiceConnection mConnection;
 
-    private static final String TAG = "AlipayService";
+    public static final String TAG = "AlipayService";
 
     private IAlipay mAgent;
     private Intent mIntent;
@@ -60,15 +61,48 @@ public class MainActivity extends AppCompatActivity {
         mConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                //拿到代理
+
+
+                //Messenger messenger = new Messenger(iBinder);
+                //messenger.send(Message.obtain());
+
+                //MessengerImpl messenger1 = new MessengerImpl();
+
+                //远程 拿到iBinder代理----->调用代理的同名方法------>调用onTransact()------>调用iBinder方法
+                //应用 拿到iBinder本身--------------------------------------------------->直接调用iBinder方法
+                Log.e(TAG, "onServiceConnected:iBinder：" + iBinder);
                 mAgent = IAlipay.Stub.asInterface(iBinder);
+                Log.e(TAG, "onServiceConnected:mAgent：" + mAgent);
+
+                try {
+
+                    // 远程注册回调，必须继承自 系统生成的 Stub(因为Stub帮我们重写了onTransact 代理方法)，
+                    // 不然 无法收到回调，也可以自己写一个 继承Binder,并重写onTransact方法，
+                    // 因为onTransact默认实现不帮助分发各个方法的调用
+
+                    // 应用内 注册 不需要，因为Client端的 mAgent就是Service端的binder对象，见方法 IAlipay.Stub.asInterface
+                    mAgent.registerPayListener(new OnAlipayCallback() {
+                        @Override
+                        public void onAlipayInfo(boolean isPaySuccess, final PayUser payUser) throws RemoteException {
+
+                            Log.e(TAG, "PayUser：" + payUser);
+                        }
+
+                        @Override
+                        public IBinder asBinder() {
+                            return null;
+                        }
+                    });
+                } catch (RemoteException e) {
+                    Log.e(TAG, "registerPayListener: " + e);
+                }
             }
 
             @Override
             public void onServiceDisconnected(ComponentName componentName) {
                 Toast.makeText(MainActivity.this, "断开支付宝服务",
                         Toast.LENGTH_SHORT).show();
-                
+
                 Log.e(TAG, "断开支付宝服务");
             }
         };
@@ -94,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         final String price = mEditText.getText().toString();
 
         try {
-            int payResult = mAgent.callSafePay("lisi", "123",
+            int payResult = mAgent.callSafePay(getPackageName(), "lisi", "123",
                     Integer.valueOf(price), System.currentTimeMillis());
 
             handlerPayResult(payResult);

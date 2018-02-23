@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.m520it.alipay.IAlipay;
+import com.m520it.alipay.OnAlipayCallback;
+import com.m520it.alipay.PayUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
         mEditText = findViewById(R.id.editText);
         mEditText.setText("10");
-
     }
 
     @SuppressLint("NewApi")
@@ -60,9 +62,48 @@ public class MainActivity extends AppCompatActivity {
 
         mConnection = new ServiceConnection() {
             @Override
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                //拿到代理
+            public void onServiceConnected(ComponentName componentName, final IBinder iBinder) {
+                //远程 拿到代理
+                //应用内 拿到本身
+                Log.e(TAG, "onServiceConnected:mAgent：" + iBinder);
                 mAgent = IAlipay.Stub.asInterface(iBinder);
+                Log.e(TAG, "onServiceConnected:mAgent：" + mAgent);
+
+                //Binder 死亡代理
+                try {
+                    iBinder.linkToDeath(new IBinder.DeathRecipient() {
+                        @Override
+                        public void binderDied() {
+                            Log.e(TAG, "iBinder.binderDied：死亡后回调" );
+
+                            // 死亡后回调
+                            iBinder.unlinkToDeath(this, 0);
+
+                            // 重新绑定服务
+                            mConnection = null;
+                            mAgent = null;
+                            bindAlipayService(mIntent);
+                        }
+                    }, 0);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    // 远程注册回调  必须 继承自 Stub(因为Stub帮我们重写了onTransact 代理方法) ,不然 无法收到回调
+                    OnAlipayCallback callback = new OnAlipayCallback.Stub() {
+
+                        @Override
+                        public void onAlipayInfo(boolean isPaySuccess, final PayUser payUser) throws RemoteException {
+                            Log.e(TAG, "PayUser=======：" + payUser);
+                        }
+                    };
+                    Log.e(TAG, "callback---------------------: " + callback);
+
+                    mAgent.registerPayListener(callback);
+                } catch (Exception e) {
+                    Log.e(TAG, "registerPayListener: " + e);
+                }
             }
 
             @Override
@@ -93,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         final String price = mEditText.getText().toString();
 
         try {
-            int payResult = mAgent.callSafePay("lisi", "123",
+            int payResult = mAgent.callSafePay(getPackageName(), "lisi", "123",
                     Integer.valueOf(price), System.currentTimeMillis());
 
             handlerPayResult(payResult);
